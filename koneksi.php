@@ -1,12 +1,25 @@
 <?php
-$host     = "localhost";
-$user     = "root";
-$password = ""; 
-$db       = "siakadu_db";
+// koneksi.php
+// Sesuaikan kredensial berikut dengan environment Anda.
 
-$connection = mysqli_connect($host, $user, $password, $db);
+$host   = 'localhost';
+$port   = '5432';
+$dbname = 'siakadu';
+$user   = 'postgres';
+$pass   = 'password';
 
-if (!$connection) {
-    die("Koneksi database gagal:  " . mysqli_connect_error());
+try {
+    $pdo = new PDO(
+        "pgsql:host=$host;port=$port;dbname=$dbname",
+        $user,
+        $pass,
+        [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]
+    );
+    // Semua tabel ada di schema "siakadu"
+    $pdo->exec("SET search_path TO siakadu, public");
+} catch (PDOException $e) {
+    die('Koneksi database gagal: ' . $e->getMessage());
 }
-?>
